@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <style type="text/css">
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+main {
+  width: 80%;
+  margin: 15px auto 0;
+}
+
+#customerForm input[name="name"] {
+  grid-area: name;
+}
+
+#customerForm input[name="age"] {
+  grid-area: age;
+}
+
+#customerForm input[name="roll"] {
+  grid-area: roll;
+}
+
+#customerForm button {
+  grid-area: button;
+}
+
+#customerForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "name name"
+    "age roll"
+    "button button";
+}
+
+#customerForm * {
+  margin: 7px;
+  padding: 7px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+#customerForm button {
+  outline: none;
+  background-color: #6495ed;
+  color: white;
+  border: 5px solid transparent;
+  cursor: pointer;
+}
+
+#customerForm input {
+  border: 3px solid #6495ed;
+  outline: none;
+}
+
+#customerForm input:focus {
+  border: 3px solid #367bfa;
+}
+
+#customerForm button:active {
+  border-color: #367bfa;
+}
+
+.customers {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border: 2px solid gray;
+  background-color: #ebebeb;
+  color: #2f2f2f;
+  border-radius: 15px;
+}
+
+.customers div {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+}
+
+.customers div * {
+  margin: 5px;
+}
+
+  </style>
+  <body>
+    <main>
+      <form id="customerForm">
+      </form>
+       <div class="customers"></div>
+
+    </main>
+
+    <script type="text/javascript">
+      // DOM Elements
+const customerForm = document.getElementById("customerForm");
+const customersContainer = document.querySelector(".customers");
+const nameInput = customerForm["name"];
+const ageInput = customerForm["age"];
+const rollInput = customerForm["roll"];
+
+/* 
+{
+  name: '',
+  age: number,
+  roll: number
+}
+*/
+
+const customers = JSON.parse(localStorage.getItem("customers")) || [];
+
+const addCustomer = (name, age, roll) => {
+  customers.push({
+    name,
+    age,
+    roll,
+  });
+
+  localStorage.setItem("customers", JSON.stringify(customers));
+
+  return { name, age, roll };
+};
+
+const createCustomerElement = ({ name, age, roll }) => {
+  // Create elements
+  const customerDiv = document.createElement("div");
+  const customerName = document.createElement("h2");
+  const customerAge = document.createElement("p");
+  const customerRoll = document.createElement("p");
+
+  // Fill the content
+  customerName.innerText = "Customer Search : " + name;
+  customerAge.innerText = "Material: " + age;
+  customerRoll.innerText = "Design: " + roll;
+
+  // Add to the DOM
+  customerDiv.append(customerName, customerAge, customerRoll);
+  customersContainer.appendChild(customerDiv);
+
+  customersContainer.style.display = customers.length === 0 ? "none" : "flex";
+};
+
+customersContainer.style.display = customers.length === 0 ? "none" : "flex";
+
+customers.forEach(createCustomerElement);
+
+customerForm.onsubmit = e => {
+  e.preventDefault();
+
+  const newCustomer = addCustomer(
+    nameInput.value,
+    ageInput.value,
+    rollInput.value
+  );
+
+  createCustomerElement(newCustomer);
+
+  nameInput.value = "";
+  ageInput.value = "";
+  rollInput.value = "";
+};
+
+    </script>
+  </body>
+</html>
